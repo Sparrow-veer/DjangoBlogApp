@@ -1,0 +1,4 @@
+WARNING:django.request:Not Found: /favicon.ico
+DEBUG:root:prudhvi
+DEBUG:root:k.prudhvireddy1996@gmail.com
+DEBUG:asyncio:Using proactor: IocpProactor
