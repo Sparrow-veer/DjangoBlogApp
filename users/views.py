@@ -3,7 +3,7 @@ from django.shortcuts import render,redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.views import View
-from .forms import UserRegisterForm,UserUpdateForm,ProfileUpdateForm
+from .forms import UserRegisterForm,UserUpdateForm,ProfileUpdateForm,DOBUpdateForm
 
 # Create your views here.
 
@@ -34,7 +34,7 @@ class Validation(View):
             if form.is_valid():
                 form.save()
                 username = form.cleaned_data.get('username')
-                print(username)
+                print(form.cleaned_data.get('dob'))
                 messages.success(request, f'Account created for {username}... U can now Login')
                 return redirect('login')
             else:
@@ -45,19 +45,22 @@ def profile(request):
     if(request.method=='POST'):
         u_form=UserUpdateForm(request.POST,instance=request.user)
         p_form=ProfileUpdateForm(request.POST,request.FILES,instance=request.user.profile)
+        d_form=DOBUpdateForm(request.POST,instance=request.user.dobdetail)
 
-
-        if(u_form.is_valid() and p_form.is_valid()):
+        if(u_form.is_valid() and p_form.is_valid() and d_form.is_valid()):
             u_form.save()
             p_form.save()
+            d_form.save()
             messages.success(request, f'User Info Updated!!')
             return redirect('profile')
     else:
         u_form = UserUpdateForm(instance=request.user)
         p_form = ProfileUpdateForm(instance=request.user.profile)
+        d_form= DOBUpdateForm(instance=request.user.dobdetail)
     context={
         'u_form':u_form,
-        'p_form':p_form
+        'p_form':p_form,
+        'd_form':d_form
 
     }
     return render(request,'users/profile.html',context)

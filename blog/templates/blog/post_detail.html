@@ -16,6 +16,9 @@
     </div>
     <h2>{{ object.title }}</h2>
     <p class="article-content">{{ object.content }}</p>
+    {%if post.fruit_pic%}
+    <img class="rounded-circle article-img" src="{{post.fruit_pic.url}}">
+    {%endif%}
   </div>
 </article>
 

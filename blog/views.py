@@ -3,6 +3,10 @@ from django.http import HttpResponse
 from django.views.generic import ListView,DetailView,CreateView,UpdateView,DeleteView
 from django.contrib.auth.models import User
 from . import models
+import random
+import requests
+import asyncio
+
 from django.contrib.auth.mixins import LoginRequiredMixin,UserPassesTestMixin
 # Create your views here.
 import logging
@@ -45,9 +49,15 @@ class PostDetailView(DetailView):
 
 class PostCreateView(LoginRequiredMixin,CreateView):
     model=models.Post
-    fields=['title','content',]
+    fields=['title','content','fruit_pic']
+
 
     def form_valid(self, form):
+        if(len(form.instance.content)==0):
+            response= requests.get("https://zenquotes.io/api/random")
+            print(response)
+            form.instance.content =response.json()[0]['q']
+
         logging.debug(self.request.user)
         logging.debug(self.request.user.email)
         form.instance.author=self.request.user
@@ -56,9 +66,14 @@ class PostCreateView(LoginRequiredMixin,CreateView):
 
 class PostUpdateView(LoginRequiredMixin,UserPassesTestMixin,UpdateView):
     model=models.Post
-    fields=['title','content',]
+    fields=['title','content','fruit_pic']
 
     def form_valid(self, form):
+        if (len(form.instance.content) == 0):
+            response = requests.get("https://zenquotes.io/api/random")
+            print(response)
+            form.instance.content = response.json()[0]['q']
+
         form.instance.author=self.request.user
         return super().form_valid(form)
 

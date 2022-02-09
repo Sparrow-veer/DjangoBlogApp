@@ -20,3 +20,10 @@ class Profile(models.Model):
             output_size=(300,300)
             img.thumbnail(output_size)
             img.save(self.image.path)
+
+
+class DOBDetail(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    dob=models.DateField(null=True,max_length=8)
+    location=models.CharField(max_length=200)
+
